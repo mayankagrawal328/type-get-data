@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Clipboard Sync</title>
+</head>
+<body>
+    <h1>📋 Clipboard Data from Flask</h1>
+    <div id="data"></div>
+
+    <h2>📤 Send Text to Flask</h2>
+    <textarea id="inputData" style="width: 80%; height: 100px;"></textarea><br>
+    <button onclick="sendToFlask()">Send to Flask</button>
+  <a href="http://localhost:3000/api/type"><button >🛑 Stop Typing</button></a>
+
+    <script>
+        async function fetchData() {
+            const response = await fetch('/api/data');
+            const result = await response.json();
+            document.getElementById('data').textContent = result.data;
+        }
+
+        async function sendToFlask() {
+            const inputData = document.getElementById('inputData').value;
+            const response = await fetch('/api/send-to-flask', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ data: inputData })
+            });
+            const result = await response.json();
+            // alert(result.message);
+        }
+
+        fetchData();
+
+
+
+            function stopTyping() {
+      fetch("http://localhost:3000/type", {
+        method: "POST"
+      })
+      .then(response => response.json())
+      .then(result => {
+        alert("🛑 Typing stopped.");
+      })
+      .catch(error => {
+        alert("Failed to stop typing: " + error);
+      });
+    }
+    </script>
+</body>
+</html>
